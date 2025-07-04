@@ -16,10 +16,10 @@ func _on_submit_button_pressed():
 	var byte_result = parse_byte_array(byte_array_text)
 	var json_result = parse_json_dictionary(json_text)
 	json_result = convert_keys_to_int(json_result, ["level"])
-	
+
 	displayDebugOutput(string_val, number_val, byte_result, json_result)
-	displayWasmOutput(string_val, number_val, byte_result, json_result)
-	
+	displayWasmOutput(string_val, number_val, byte_result, json_text)
+
 func displayDebugOutput(string_val, number_val, byte_result, json_result):
 	debug_output.clear()
 	debug_output.append_text("[b]String:[/b] %s\n" % string_val)
@@ -27,11 +27,18 @@ func displayDebugOutput(string_val, number_val, byte_result, json_result):
 	debug_output.append_text("[b]Bytes:[/b] %s\n" % str(byte_result))
 	debug_output.append_text("[b]JSON:[/b] %s\n" % str(json_result))
 
-func displayWasmOutput(string_val, number_val, byte_result, json_result):
-	var wasm_byte_result = getBytes(byte_result)
-	
+func displayWasmOutput(string_val, number_val, byte_result, json_text):
+	var wasm_string_result = getWasmString(string_val)
+	var wasm_int_result = getWasmInt(number_val)
+	var wasm_byte_result = getWasmBytes(byte_result)
+	var wasm_json_result = getWasmJson(json_text)
+	wasm_json_result = convert_keys_to_int(wasm_json_result, ["level"])
+
 	wasm_output.clear()
+	wasm_output.append_text("[b]String:[/b] %s\n" % wasm_string_result)
+	wasm_output.append_text("[b]Number:[/b] %d\n" % wasm_int_result)
 	wasm_output.append_text("[b]Bytes:[/b] %s\n" % str(wasm_byte_result))
+	wasm_output.append_text("[b]JSON:[/b] %s\n" % str(wasm_json_result))
 
 
 func parse_byte_array(text: String) -> Array:
@@ -51,8 +58,17 @@ func parse_byte_array(text: String) -> Array:
 			return []
 	return byte_array
 
-func getBytes(bytes: PackedByteArray):
+func getWasmString(text: String):
+	return WasmManager.getString(text)
+
+func getWasmInt(value: int):
+	return WasmManager.getInt(value)
+
+func getWasmBytes(bytes: PackedByteArray):
 	return WasmManager.getBytes(bytes)
+
+func getWasmJson(json_text: String):
+	return WasmManager.getJson(json_text)
 
 func parse_json_dictionary(json_text: String) -> Dictionary:
 	var parser = JSON.new()

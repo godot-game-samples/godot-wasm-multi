@@ -43,6 +43,7 @@ text = "数値"
 
 [node name="NumberInput" type="SpinBox" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+max_value = 2.14748e+09
 
 [node name="Label3" type="Label" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
