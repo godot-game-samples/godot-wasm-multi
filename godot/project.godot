@@ -18,3 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 WasmManager="*res://wasm_manager.gd"
+
+[display]
+
+window/size/viewport_width=1300
+window/size/viewport_height=800
