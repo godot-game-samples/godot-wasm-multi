@@ -30,6 +30,23 @@ pub unsafe extern "C" fn get_data_len() -> usize {
 }
 
 #[unsafe(no_mangle)]
+pub extern "C" fn reverse_string() {
+    let buffer_guard = BUFFER.lock();
+    let mut result_guard = RESULT_BUFFER.lock();
+
+    if let Some(ref data) = *buffer_guard {
+        if let Ok(input_str) = std::str::from_utf8(data) {
+            let reversed: String = input_str.chars().rev().collect();
+            *result_guard = Some(reversed.into_bytes());
+        } else {
+            *result_guard = Some("invalid_utf8".as_bytes().to_vec());
+        }
+    } else {
+        *result_guard = Some("no_data".as_bytes().to_vec());
+    }
+}
+
+#[unsafe(no_mangle)]
 pub extern "C" fn double_stored_data() {
     let buffer_guard = BUFFER.lock();
     let mut result_guard = RESULT_BUFFER.lock();

@@ -13,22 +13,34 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func get_string(text: String) -> String:
+func store_string(text: String, offset := 0) -> int:
 	var bytes: PackedByteArray = text.to_utf8_buffer()
-	var offset := 0
-	
 	wasm.memory.seek(offset).put_data(bytes)
 	wasm.function("store_data", [offset, bytes.size()])
+	return bytes.size()
 
+func get_string(text: String) -> String:
+	var offset := 0
+	var length = store_string(text, offset)
 	var ptr = wasm.function("get_data_ptr")
-	var result = wasm.memory.seek(ptr).get_data(bytes.size())
+	var result = wasm.memory.seek(ptr).get_data(length)
+	return get_result_string(result)
 
+func get_result_string(result: Array) -> String:
 	if result.size() > 1 and result[0] == 0:
 		var string_data: PackedByteArray = result[1]
 		return string_data.get_string_from_utf8()
 	else:
 		print("Failed to read memory.")
 		return ""
+
+func get_string_reverse(text: String) -> String:
+	var offset := 0
+	var length = store_string(text, offset)
+	wasm.function("reverse_string")
+	var ptr = wasm.function("get_result_buffer_ptr")
+	var result = wasm.memory.seek(ptr).get_data(length)
+	return get_result_string(result)
 
 func store_int(value: int, offset: int) -> void:
 	var bytes := PackedByteArray()
