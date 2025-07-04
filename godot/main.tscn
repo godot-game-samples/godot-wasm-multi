@@ -31,15 +31,15 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "文字列"
+text = "String"
 
 [node name="StringInput" type="LineEdit" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "あいうえお"
+text = "ABCDEF"
 
 [node name="Label2" type="Label" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "数値"
+text = "Int"
 
 [node name="NumberInput" type="SpinBox" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -47,7 +47,7 @@ max_value = 2.14748e+09
 
 [node name="Label3" type="Label" parent="Control/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "バイト列（[1,2,3]）"
+text = "ByteArray（[1,2,3]）"
 
 [node name="ByteArrayInput" type="TextEdit" parent="Control/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
@@ -96,6 +96,10 @@ custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_horizontal = 8
 
+[node name="Spacer2" type="Control" parent="Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="WasmContainer" type="VBoxContainer" parent="Control/HBoxContainer"]
 layout_mode = 2
 
@@ -104,7 +108,15 @@ layout_mode = 2
 text = "WasmLog"
 
 [node name="WasmOutput" type="RichTextLabel" parent="Control/HBoxContainer/WasmContainer"]
-custom_minimum_size = Vector2(400, 400)
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Control/HBoxContainer/WasmContainer"]
+layout_mode = 2
+text = "WasmCalcLog"
+
+[node name="WasmOutput2" type="RichTextLabel" parent="Control/HBoxContainer/WasmContainer"]
+custom_minimum_size = Vector2(400, 300)
 layout_mode = 2
 
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/SubmitButton" to="Control" method="_on_submit_button_pressed"]
