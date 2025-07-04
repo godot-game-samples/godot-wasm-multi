@@ -1,5 +1,5 @@
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Player {
-    pub name: &'static str,
+    pub name: String,
     pub level: u8,
 }

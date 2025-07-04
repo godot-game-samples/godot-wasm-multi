@@ -2,11 +2,11 @@ pub mod player;
 use crate::player::Player;
 use spin::Mutex;
 use lazy_static::lazy_static;
+use serde_json;
 
 lazy_static! {
     static ref BUFFER: Mutex<Option<Vec<u8>>> = Mutex::new(None);
     static ref RESULT_BUFFER: Mutex<Option<Vec<u8>>> = Mutex::new(None);
-    static ref LAST_STRING: Mutex<Option<String>> = Mutex::new(None);
     static ref LAST_JSON: Mutex<Option<String>> = Mutex::new(None);
 }
 
@@ -86,20 +86,42 @@ pub unsafe extern "C" fn get_result_buffer_ptr() -> *const u8 {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn get_last_string_len() -> usize {
-    let lock = LAST_STRING.lock();
-    lock.as_ref().map(|s| s.len()).unwrap_or(0)
+pub extern "C" fn get_result_buffer_size() -> usize {
+    let guard = RESULT_BUFFER.lock();
+    guard.as_ref().map(|buf| buf.len()).unwrap_or(0)
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn get_player_json() -> *const u8 {
-    let player = Player { name: "creeper", level: 3 };
+    let player = Player { name: "creeper".to_string(), level: 3 };
     let json: serde_json_core::heapless::String<256> = serde_json_core::to_string(&player).unwrap();
     let mut guard = LAST_JSON.lock();
     *guard = Some(json.parse().unwrap());
     guard.as_ref().unwrap().as_ptr()
 }
 
+#[unsafe(no_mangle)]
+pub extern "C" fn transform_player() {
+    let buffer_guard = BUFFER.lock();
+    let mut result_guard = RESULT_BUFFER.lock();
+
+    if let Some(ref data) = *buffer_guard {
+        if let Ok(json_str) = std::str::from_utf8(data) {
+            let parsed: Result<Player, _> = serde_json::from_str(json_str);
+            if let Ok(mut player) = parsed {
+                // name反転、level×2
+                player.name = player.name.chars().rev().collect::<String>();
+                player.level = player.level.saturating_mul(2);
+
+                if let Ok(output_json) = serde_json::to_string(&player) {
+                    *result_guard = Some(output_json.into_bytes());
+                    return;
+                }
+            }
+        }
+    }
+    *result_guard = Some(b"{}".to_vec());
+}
 
 #[unsafe(no_mangle)]
 pub extern "C" fn get_player_json_len() -> usize {
