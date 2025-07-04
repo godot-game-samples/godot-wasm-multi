@@ -102,7 +102,7 @@ layout_mode = 2
 layout_mode = 2
 text = "WasmLog"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/HBoxContainer/WasmContainer"]
+[node name="WasmOutput" type="RichTextLabel" parent="Control/HBoxContainer/WasmContainer"]
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 

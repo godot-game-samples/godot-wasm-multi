@@ -12,3 +12,26 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	pass
+
+func getString():
+	pass
+
+func getInt():
+	pass
+	
+func getBytes(bytes: PackedByteArray) -> PackedByteArray: 
+	var offset := 0
+	wasm.memory.seek(offset).put_data(bytes)
+	wasm.function("store_data", [offset, bytes.size()])
+	var ptr = wasm.function("get_data_ptr")
+	var result = wasm.memory.seek(ptr).get_data(bytes.size())	
+
+	if result[0] == 0:
+		var data: PackedByteArray = result[1]
+		return data
+	else:
+		print("Failed to read memory.")
+	return []
+	
+func getJson():
+	pass

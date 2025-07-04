@@ -5,6 +5,7 @@ extends Control
 @onready var byte_array_input = $HBoxContainer/VBoxContainer/ByteArrayInput
 @onready var json_input = $HBoxContainer/VBoxContainer/JsonInput
 @onready var debug_output = $HBoxContainer/DebugContainer/DebugOutput
+@onready var wasm_output = $HBoxContainer/WasmContainer/WasmOutput
 
 func _on_submit_button_pressed():
 	var string_val = string_input.text
@@ -16,11 +17,22 @@ func _on_submit_button_pressed():
 	var json_result = parse_json_dictionary(json_text)
 	json_result = convert_keys_to_int(json_result, ["level"])
 	
+	displayDebugOutput(string_val, number_val, byte_result, json_result)
+	displayWasmOutput(string_val, number_val, byte_result, json_result)
+	
+func displayDebugOutput(string_val, number_val, byte_result, json_result):
 	debug_output.clear()
 	debug_output.append_text("[b]String:[/b] %s\n" % string_val)
 	debug_output.append_text("[b]Number:[/b] %d\n" % number_val)
 	debug_output.append_text("[b]Bytes:[/b] %s\n" % str(byte_result))
 	debug_output.append_text("[b]JSON:[/b] %s\n" % str(json_result))
+
+func displayWasmOutput(string_val, number_val, byte_result, json_result):
+	var wasm_byte_result = getBytes(byte_result)
+	
+	wasm_output.clear()
+	wasm_output.append_text("[b]Bytes:[/b] %s\n" % str(wasm_byte_result))
+
 
 func parse_byte_array(text: String) -> Array:
 	text = text.strip_edges()
@@ -38,6 +50,9 @@ func parse_byte_array(text: String) -> Array:
 			push_error("バイト列の要素が数値ではありません: %s" % trimmed)
 			return []
 	return byte_array
+
+func getBytes(bytes: PackedByteArray):
+	return WasmManager.getBytes(bytes)
 
 func parse_json_dictionary(json_text: String) -> Dictionary:
 	var parser = JSON.new()
