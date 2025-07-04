@@ -66,6 +66,20 @@ pub extern "C" fn double_stored_data() {
 }
 
 #[unsafe(no_mangle)]
+pub extern "C" fn reverse_bytes() {
+    let buffer_guard = BUFFER.lock();
+    let mut result_guard = RESULT_BUFFER.lock();
+
+    if let Some(ref data) = *buffer_guard {
+        let mut reversed = data.clone();
+        reversed.reverse();
+        *result_guard = Some(reversed);
+    } else {
+        *result_guard = Some(vec![]);
+    }
+}
+
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn get_result_buffer_ptr() -> *const u8 {
     let guard = RESULT_BUFFER.lock();
     guard.as_ref().map(|buf| buf.as_ptr()).unwrap_or(core::ptr::null())

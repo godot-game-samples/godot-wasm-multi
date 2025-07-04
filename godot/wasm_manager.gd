@@ -74,19 +74,34 @@ func get_int_double(value: int) -> int:
 	var ptr = wasm.function("get_result_buffer_ptr")
 	return get_int_at(ptr)
 
-func get_bytes(bytes: PackedByteArray) -> PackedByteArray: 
-	var offset := 0
-	wasm.memory.seek(offset).put_data(bytes)
-	wasm.function("store_data", [offset, bytes.size()])
-	var ptr = wasm.function("get_data_ptr")
-	var result = wasm.memory.seek(ptr).get_data(bytes.size())	
-
+func get_result_bytes(result: Array) -> PackedByteArray:
 	if result[0] == 0:
-		var data: PackedByteArray = result[1]
-		return data
+		return result[1]
 	else:
 		print("Failed to read memory.")
 	return []
+
+func store_bytes(bytes: PackedByteArray, offset := 0) -> int:
+	wasm.memory.seek(offset).put_data(bytes)
+	wasm.function("store_data", [offset, bytes.size()])
+	return bytes.size()
+
+func get_bytes(bytes: PackedByteArray) -> PackedByteArray: 
+	var offset := 0
+	var length = store_bytes(bytes, offset)
+	var ptr = wasm.function("get_data_ptr")
+	var result = wasm.memory.seek(ptr).get_data(length)	
+	return get_result_bytes(result)
+	
+func get_bytes_reverse(bytes: PackedByteArray) -> PackedByteArray:
+	var offset := 0
+	var length = store_bytes(bytes, offset)
+
+	wasm.function("reverse_bytes")
+	var ptr = wasm.function("get_result_buffer_ptr")
+	var result = wasm.memory.seek(ptr).get_data(length)
+	return get_result_bytes(result)
+
 	
 func get_json(text: String) -> Dictionary:
 	var bytes: PackedByteArray = text.to_utf8_buffer()

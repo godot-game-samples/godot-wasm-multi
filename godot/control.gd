@@ -35,8 +35,9 @@ func display_wasm_output(string_val, number_val, byte_result, json_text):
 	var wasm_json_result = get_wasm_json(json_text)
 	wasm_json_result = convert_keys_to_int(wasm_json_result, ["level"])
 	
-	var wasm_string_result_reverse = get_wasm_string_reverse(string_val)
-	var wasm_int_double_result = get_int_double(number_val)
+	var wasm_string_reverse_result = get_wasm_string_reverse(string_val)
+	var wasm_int_double_result = get_wasm_int_double(number_val)
+	var wasm_byte_reverse_result = get_wasm_bytes_reverse(byte_result)
 
 	wasm_output.clear()
 	wasm_output.append_text("[b]String:[/b] %s\n" % wasm_string_result)
@@ -45,8 +46,9 @@ func display_wasm_output(string_val, number_val, byte_result, json_text):
 	wasm_output.append_text("[b]JSON:[/b] %s\n" % str(wasm_json_result))
 	
 	wasm_output2.clear()
-	wasm_output2.append_text("[b]String:[/b] %s\n" % wasm_string_result_reverse)
+	wasm_output2.append_text("[b]String:[/b] %s\n" % wasm_string_reverse_result)
 	wasm_output2.append_text("[b]Number:[/b] %d\n" % wasm_int_double_result)
+	wasm_output2.append_text("[b]Bytes:[/b] %s\n" % str(wasm_byte_reverse_result))
 
 
 func parse_byte_array(text: String) -> Array:
@@ -75,15 +77,18 @@ func get_wasm_string_reverse(text: String):
 func get_wasm_int(value: int):
 	return WasmManager.get_int(value)
 
+func get_wasm_int_double(value: int):
+	return WasmManager.get_int_double(value)
+
 func get_wasm_bytes(bytes: PackedByteArray):
 	return WasmManager.get_bytes(bytes)
+	
+func get_wasm_bytes_reverse(bytes: PackedByteArray):
+	return WasmManager.get_bytes_reverse(bytes)
 
 func get_wasm_json(json_text: String):
 	return WasmManager.get_json(json_text)
 	
-func get_int_double(value: int):
-	return WasmManager.get_int_double(value)
-
 func parse_json_dictionary(json_text: String) -> Dictionary:
 	var parser = JSON.new()
 	var result = parser.parse(json_text)
