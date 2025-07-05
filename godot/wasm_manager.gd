@@ -19,6 +19,19 @@ func store_string(text: String, offset := 0) -> int:
 	wasm.function("store_data", [offset, bytes.size()])
 	return bytes.size()
 
+func store_int(value: int, offset: int) -> void:
+	var bytes := PackedByteArray()
+	bytes.append(value & 0xFF)
+	bytes.append((value >> 8) & 0xFF)
+	bytes.append((value >> 16) & 0xFF)
+	bytes.append((value >> 24) & 0xFF)
+	wasm.memory.seek(offset).put_data(bytes)
+
+func store_bytes(bytes: PackedByteArray, offset := 0) -> int:
+	wasm.memory.seek(offset).put_data(bytes)
+	wasm.function("store_data", [offset, bytes.size()])
+	return bytes.size()
+
 func get_string(text: String) -> String:
 	var offset := 0
 	var length = store_string(text, offset)
@@ -41,14 +54,6 @@ func get_string_reverse(text: String) -> String:
 	var ptr = wasm.function("get_result_buffer_ptr")
 	var result = wasm.memory.seek(ptr).get_data(length)
 	return get_result_string(result)
-
-func store_int(value: int, offset: int) -> void:
-	var bytes := PackedByteArray()
-	bytes.append(value & 0xFF)
-	bytes.append((value >> 8) & 0xFF)
-	bytes.append((value >> 16) & 0xFF)
-	bytes.append((value >> 24) & 0xFF)
-	wasm.memory.seek(offset).put_data(bytes)
 
 func get_int_at(offset: int) -> int:
 	var result = wasm.memory.seek(offset).get_data(4)
@@ -80,11 +85,6 @@ func get_result_bytes(result: Array) -> PackedByteArray:
 	else:
 		print("Failed to read memory.")
 	return []
-
-func store_bytes(bytes: PackedByteArray, offset := 0) -> int:
-	wasm.memory.seek(offset).put_data(bytes)
-	wasm.function("store_data", [offset, bytes.size()])
-	return bytes.size()
 
 func get_bytes(bytes: PackedByteArray) -> PackedByteArray: 
 	var offset := 0

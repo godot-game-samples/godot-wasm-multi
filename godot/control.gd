@@ -20,6 +20,7 @@ func _on_submit_button_pressed():
 
 	display_debug_output(string_val, number_val, byte_result, json_result)
 	display_wasm_output(string_val, number_val, byte_result, json_text)
+	display_wasm_calc_output(string_val, number_val, byte_result, json_text)
 
 func display_debug_output(string_val, number_val, byte_result, json_result):
 	debug_output.clear()
@@ -34,25 +35,25 @@ func display_wasm_output(string_val, number_val, byte_result, json_text):
 	var wasm_byte_result = get_wasm_bytes(byte_result)
 	var wasm_json_result = get_wasm_json(json_text)
 	wasm_json_result = convert_keys_to_int(wasm_json_result, ["level"])
-	
-	var wasm_string_reverse_result = get_wasm_string_reverse(string_val)
-	var wasm_int_double_result = get_wasm_int_double(number_val)
-	var wasm_byte_reverse_result = get_wasm_bytes_reverse(byte_result)
-	var wasm_json_transformed_result = get_wasm_json_transformed(json_text)
-	wasm_json_transformed_result = convert_keys_to_int(wasm_json_transformed_result, ["level"])
 
 	wasm_output.clear()
 	wasm_output.append_text("[b]String:[/b] %s\n" % wasm_string_result)
 	wasm_output.append_text("[b]Number:[/b] %d\n" % wasm_int_result)
 	wasm_output.append_text("[b]Bytes:[/b] %s\n" % str(wasm_byte_result))
 	wasm_output.append_text("[b]JSON:[/b] %s\n" % str(wasm_json_result))
-	
+
+func display_wasm_calc_output(string_val, number_val, byte_result, json_text):
+	var wasm_string_reverse_result = get_wasm_string_reverse(string_val)
+	var wasm_int_double_result = get_wasm_int_double(number_val)
+	var wasm_byte_reverse_result = get_wasm_bytes_reverse(byte_result)
+	var wasm_json_transformed_result = get_wasm_json_transformed(json_text)
+	wasm_json_transformed_result = convert_keys_to_int(wasm_json_transformed_result, ["level"])
+
 	wasm_output2.clear()
 	wasm_output2.append_text("[b]String:[/b] %s\n" % wasm_string_reverse_result)
 	wasm_output2.append_text("[b]Number:[/b] %d\n" % wasm_int_double_result)
 	wasm_output2.append_text("[b]Bytes:[/b] %s\n" % str(wasm_byte_reverse_result))
 	wasm_output2.append_text("[b]JSON:[/b] %s\n" % str(wasm_json_transformed_result))
-
 
 func parse_byte_array(text: String) -> Array:
 	text = text.strip_edges()
