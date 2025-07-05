@@ -21,11 +21,21 @@ To use Rust with Godot 4, use godot-wasm.
 
 ### Output Type
 
-| Log Type     | String  | Number | Bytes           | JSON                                      | Description                                                                 |
-|--------------|---------|--------|------------------|-------------------------------------------|-----------------------------------------------------------------------------|
-| DebugLog     | ABCDEF  | 1      | [1, 2, 3, 4, 5]  | { "name": "creeper", "level": 13 }        | Display input values as they are (no processing)                                        |
-| WasmLog      | ABCDEF  | 1      | [1, 2, 3, 4, 5]  | { "name": "creeper", "level": 13 }        | Pass input to Wasm and read back (without conversion)                                   |
-| WasmCalcLog  | FEDCBA  | 2      | [5, 4, 3, 2, 1]  | { "name": "repeerc", "level": 26 }        | Output after processing via Wasm (String: inverted, Number: twice, Bytes: inverted, JSON: processed)           |
+| Log Type     | Description                                                                 |
+|---------------|-----------------------------------------------------------------------------|
+| DebugLog      | Display input values as they are (no processing)                                        |
+| WasmLog       | Pass input to Wasm and read back (without conversion)                                   |
+| WasmCalcLog   | Output after processing via Wasm (String: inverted, Number: twice, Bytes: inverted, JSON: processed)           |
+
+**example**
+
+| InputType | InputValue                         | DebugLog                           | WasmLog | WasmCalcLog     |                                       
+|-----------|------------------------------------|------------------------------------|--------|-----------------|
+| String    | ABCDEF                             | ABCDEF                             | ABCDEF      | FEDCBA          | 
+| Number    | 1                                  | 1                                  | 1      | 2               | 
+| Bytes     | [1, 2, 3, 4, 5]                    | [1, 2, 3, 4, 5]                    | [1, 2, 3, 4, 5]      | [5, 4, 3, 2, 1] |
+| JSON     | { "name": "creeper", "level": 13 } | { "name": "creeper", "level": 13 } | { "name": "creeper", "level": 13 }      | { "name": "repeerc", "level": 26 } |  
+
 
 ## Author
 
